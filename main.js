@@ -1,3 +1,13 @@
+const buttons = document.querySelectorAll('button');
+const display = document.querySelector('.display')
+
+buttons.forEach((button) => {
+    button.addEventListener('click', (e) => {
+        console.log(e.target.className);
+      display.textContent = `${e.target.className}`;
+    })
+})
+
 function add (num1, num2) {
     let total = num1 + num2;
     return total;
@@ -29,3 +39,4 @@ function operate (num1, operator, num2) {
         return divide (num1, num2);
     }
 }
+
