@@ -1,10 +1,11 @@
 const buttons = document.querySelectorAll('button');
-const display = document.querySelector('.display')
+const display = document.querySelector('.display');
+const numbers = document.querySelectorAll('.number');
 
-buttons.forEach((button) => {
+numbers.forEach((button) => {
     button.addEventListener('click', (e) => {
-        console.log(e.target.className);
-      display.textContent = `${e.target.className}`;
+        let value = e.target.textContent;
+      display.textContent = `${value}`;
     })
 })
 

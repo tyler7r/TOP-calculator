@@ -5,6 +5,8 @@
 }
 .display {
     grid-column: 1 / 5;
+    text-align: right;
+    margin-right: 10px;
 }
 #zero {
     grid-column: 1 / 3;
