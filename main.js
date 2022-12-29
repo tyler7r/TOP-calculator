@@ -1,13 +1,17 @@
 const buttons = document.querySelectorAll('button');
 const display = document.querySelector('.display');
 const numbers = document.querySelectorAll('.number');
+let displayValue = '';
 
 numbers.forEach((button) => {
     button.addEventListener('click', (e) => {
         let value = e.target.textContent;
-      display.textContent = `${value}`;
+        displayValue += value;
+        display.textContent = `${displayValue}`;
     })
 })
+
+
 
 function add (num1, num2) {
     let total = num1 + num2;
