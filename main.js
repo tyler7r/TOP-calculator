@@ -14,10 +14,10 @@ let equalBtnClick = false;
 function initialLoad () {
         numbers.forEach((button) => {
             button.addEventListener('click', (e) => {
+                equalBtnClick = false;
                 let value = e.target.textContent;
                 displayValue += value;
                 display.textContent = `${displayValue}`;
-
             })
         })
 }
@@ -56,34 +56,46 @@ function operate (num1, operator, num2) {
     }
 }
 
+function getTotal() {
+
+    num1 = `${newTotal}`
+    num2 = `${displayValue}`;
+    let newNum1 = parseInt(num1);
+    let newNum2 = parseInt(num2);
+    displayValue = '';
+    let total = operate(newNum1, operandChoice, newNum2);
+    displayValue += total;
+    newTotal = total;
+    display.textContent = `${displayValue}`;
+}
+
 let addBtn = document.querySelector('.add');
 addBtn.addEventListener('click', (e) => {
-    operatorClick = true;
-    num1 += `${displayValue}`;
-    if (addBtnClick === true) {
-        return
-    }
-    else {
+    if (operatorClick === true && equalBtnClick === false) {
+        console.log('b');
+        operandChoice = `${e.target.className}`
+        getTotal();
+    // if (equalBtnClick === true) {
+
+    // }
+    } else {
+        num1 = `${displayValue}`;
+        newTotal = `${displayValue}`
         addBtnClick = true;
-        operandChoice += `${e.target.className}`;
+        operandChoice = `${e.target.className}`;
+        console.log('a');
     }
-    console.log(num1);
     displayValue = '';
+    operatorClick = true;
     // add some class list that will change how the button looks
 })
 
 let equalBtn = document.querySelector('.equal');
-equalBtn.addEventListener('click', () => {
+equalBtn.addEventListener('click', (equalButton))
+
+function equalButton () {
     if (equalBtnClick === false) {
-        num2 += `${displayValue}`;
-        let newNum1 = parseInt(num1);
-        let newNum2 = parseInt(num2);
-        displayValue = '';
-        let total = operate(newNum1, operandChoice, newNum2);
-        displayValue += total;
-        newTotal += total;
-        display.textContent = `${displayValue}`;
-        displayValue = '';
+        getTotal();
     } if (equalBtnClick === true) {
         let newNum1 = parseInt(newTotal);
         let newNum2 = parseInt(num2);
@@ -94,7 +106,18 @@ equalBtn.addEventListener('click', () => {
         display.textContent = `${displayValue}`;
     }
     equalBtnClick = true;
-})
+}
 
+let clearBtn = document.querySelector('.clear');
+clearBtn.addEventListener('click', () => {
+    displayValue = '';
+    display.textContent = `${displayValue}`;
+    newTotal = '';
+    num1 = '';
+    num2 = '';
+    equalBtnClick = false;
+    addBtnClick = false;
+    operatorClick = false;
+})
 initialLoad();
 
