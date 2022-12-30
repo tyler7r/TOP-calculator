@@ -2,14 +2,21 @@ const buttons = document.querySelectorAll('button');
 const display = document.querySelector('.display');
 const numbers = document.querySelectorAll('.number');
 let displayValue = '';
+let operatorClick = false;
+let addBtnClick = false;
+let operandChoice = '';
+let num1 = '';
 
-numbers.forEach((button) => {
-    button.addEventListener('click', (e) => {
-        let value = e.target.textContent;
-        displayValue += value;
-        display.textContent = `${displayValue}`;
-    })
-})
+function initialLoad () {
+        numbers.forEach((button) => {
+            button.addEventListener('click', (e) => {
+                let value = e.target.textContent;
+                displayValue += value;
+                display.textContent = `${displayValue}`;
+
+            })
+        })
+}
 
 
 
@@ -44,4 +51,22 @@ function operate (num1, operator, num2) {
         return divide (num1, num2);
     }
 }
+
+let addBtn = document.querySelector('.add');
+addBtn.addEventListener('click', (e) => {
+    operatorClick = true;
+    num1 += `${displayValue}`;
+    if (addBtnClick === true) {
+        return
+    }
+    else {
+        addBtnClick = true;
+        operandChoice += `${e.target.className}`;
+    }
+    console.log(num1);
+    displayValue = '';
+    // add some class list that will change how the button looks
+})
+
+initialLoad();
 
