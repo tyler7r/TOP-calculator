@@ -6,6 +6,10 @@ let operatorClick = false;
 let addBtnClick = false;
 let operandChoice = '';
 let num1 = '';
+let num2 = '';
+let newTotal = '';
+let equalBtnClick = false;
+
 
 function initialLoad () {
         numbers.forEach((button) => {
@@ -41,7 +45,7 @@ function divide (num1, num2) {
 }
 
 function operate (num1, operator, num2) {
-    if (operator == add) {
+    if (operator == 'add') {
         return add (num1, num2);
     } else if (operator == subtract) {
         return subtract (num1, num2)
@@ -66,6 +70,30 @@ addBtn.addEventListener('click', (e) => {
     console.log(num1);
     displayValue = '';
     // add some class list that will change how the button looks
+})
+
+let equalBtn = document.querySelector('.equal');
+equalBtn.addEventListener('click', () => {
+    if (equalBtnClick === false) {
+        num2 += `${displayValue}`;
+        let newNum1 = parseInt(num1);
+        let newNum2 = parseInt(num2);
+        displayValue = '';
+        let total = operate(newNum1, operandChoice, newNum2);
+        displayValue += total;
+        newTotal += total;
+        display.textContent = `${displayValue}`;
+        displayValue = '';
+    } if (equalBtnClick === true) {
+        let newNum1 = parseInt(newTotal);
+        let newNum2 = parseInt(num2);
+        let total = operate(newNum1, operandChoice, newNum2);
+        newTotal = total;
+        displayValue = '';
+        displayValue += total
+        display.textContent = `${displayValue}`;
+    }
+    equalBtnClick = true;
 })
 
 initialLoad();
