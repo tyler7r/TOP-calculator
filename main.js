@@ -18,6 +18,9 @@ function initialLoad () {
                 let value = e.target.textContent;
                 displayValue += value;
                 display.textContent = `${displayValue}`;
+                operatorBtn.forEach((operator) => {
+                    operator.classList.remove('clicked');
+                })
                 console.log(e.target.id);
             })
         })
@@ -77,9 +80,6 @@ operatorBtn.forEach((operator) => {
             console.log('b');
             operandChoice = `${e.target.id}`
             getTotal();
-        // if (equalBtnClick === true) {
-
-        // }
         } else {
             num1 = `${displayValue}`;
             newTotal = `${displayValue}`
@@ -89,6 +89,8 @@ operatorBtn.forEach((operator) => {
         }
         displayValue = '';
         operatorClick = true;
+        let choice = document.getElementById(`${e.target.id}`);
+        choice.classList.add('clicked');
         // add some class list that will change how the button looks
     })
 })
@@ -109,6 +111,9 @@ function equalButton () {
         display.textContent = `${displayValue}`;
     }
     equalBtnClick = true;
+    operatorBtn.forEach((operator) => {
+        operator.classList.remove('clicked');
+    })
 }
 
 let clearBtn = document.querySelector('.clear');
