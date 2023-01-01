@@ -9,12 +9,24 @@ let num1 = '';
 let num2 = '';
 let newTotal = '';
 let equalBtnClick = false;
+clearBtnClick = true;
+
+function clearBtnCheck () {
+    if (clearBtnClick = true) {
+        displayValue = '0';
+        display.textContent = `${displayValue}`;
+    }
+}
 
 
 function initialLoad () {
         numbers.forEach((button) => {
             button.addEventListener('click', (e) => {
+                if (clearBtnClick === true) {
+                    displayValue = '';
+                }
                 equalBtnClick = false;
+                clearBtnClick = false;
                 let value = e.target.textContent;
                 displayValue += value;
                 display.textContent = `${displayValue}`;
@@ -76,6 +88,7 @@ function getTotal() {
 let operatorBtn = document.querySelectorAll('.operator');
 operatorBtn.forEach((operator) => {
     operator.addEventListener('click', (e) => {
+        clearBtnClick = false;
         if (operatorClick === true && equalBtnClick === false) {
             console.log('b');
             operandChoice = `${e.target.id}`
@@ -99,6 +112,7 @@ let equalBtn = document.querySelector('.equal');
 equalBtn.addEventListener('click', (equalButton))
 
 function equalButton () {
+    clearBtnClick = false;
     if (equalBtnClick === false) {
         getTotal();
     } if (equalBtnClick === true) {
@@ -118,8 +132,10 @@ function equalButton () {
 
 let clearBtn = document.querySelector('.clear');
 clearBtn.addEventListener('click', () => {
-    displayValue = '';
-    display.textContent = `${displayValue}`;
+    clearBtnClick = true;
+    clearBtnCheck();
+    // displayValue = '';
+    // display.textContent = `${displayValue}`;
     newTotal = '';
     num1 = '';
     num2 = '';
@@ -127,5 +143,7 @@ clearBtn.addEventListener('click', () => {
     addBtnClick = false;
     operatorClick = false;
 })
+
 initialLoad();
+clearBtnCheck();
 
