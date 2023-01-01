@@ -90,7 +90,6 @@ operatorBtn.forEach((operator) => {
     operator.addEventListener('click', (e) => {
         clearBtnClick = false;
         if (operatorClick === true && equalBtnClick === false) {
-            console.log('b');
             operandChoice = `${e.target.id}`
             getTotal();
         } else {
@@ -98,7 +97,6 @@ operatorBtn.forEach((operator) => {
             newTotal = `${displayValue}`
             addBtnClick = true;
             operandChoice = `${e.target.id}`;
-            console.log('a');
         }
         displayValue = '';
         operatorClick = true;
@@ -107,7 +105,6 @@ operatorBtn.forEach((operator) => {
         })
         let choice = document.getElementById(`${e.target.id}`);
         choice.classList.add('clicked');
-        // add some class list that will change how the button looks
     })
 })
 
@@ -137,8 +134,6 @@ let clearBtn = document.querySelector('.clear');
 clearBtn.addEventListener('click', () => {
     clearBtnClick = true;
     clearBtnCheck();
-    // displayValue = '';
-    // display.textContent = `${displayValue}`;
     newTotal = '';
     num1 = '';
     num2 = '';
