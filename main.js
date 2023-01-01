@@ -102,6 +102,9 @@ operatorBtn.forEach((operator) => {
         }
         displayValue = '';
         operatorClick = true;
+        operatorBtn.forEach((operator) => {
+            operator.classList.remove('clicked');
+        })
         let choice = document.getElementById(`${e.target.id}`);
         choice.classList.add('clicked');
         // add some class list that will change how the button looks
