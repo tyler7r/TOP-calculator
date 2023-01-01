@@ -132,6 +132,9 @@ function equalButton () {
 
 let clearBtn = document.querySelector('.clear');
 clearBtn.addEventListener('click', () => {
+    operatorBtn.forEach((operator) => {
+        operator.classList.remove('clicked');
+    })
     clearBtnClick = true;
     clearBtnCheck();
     newTotal = '';
