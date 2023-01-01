@@ -11,3 +11,7 @@
 #zero {
     grid-column: 1 / 3;
 }
+
+.clicked {
+    background-color: orange;
+}
