@@ -9,13 +9,43 @@ let num1 = '';
 let num2 = '';
 let newTotal = '';
 let equalBtnClick = false;
-clearBtnClick = true;
+let clearBtnClick = true;
+let largeNum = ''
+let largeNumCheck = false;
+
+
+
+// need to make a function that would turn answer into scientific notation when it gets too long
+function scientificNotation () {
+    if (largeNumCheck === true) {
+        display.textContent = `${largeNum}` + 'e' + `${(displayValue.length - 1)}`;
+    } else if (largeNumCheck === false) {
+        display.textContent = `${displayValue}`;
+    }
+}
 
 function clearBtnCheck () {
     if (clearBtnClick = true) {
         displayValue = '0';
         display.textContent = `${displayValue}`;
     }
+}
+
+function scientificNotationCheck(num) {
+    let length = num.length - 1;
+    if (length >= 9) {
+        largeNumCheck = true;
+        let integer = parseFloat(num);
+        if (integer < 1) {
+            largeNum = integer.toString()
+        } else if (integer >= 1) {
+            largeNum = (divide(integer, (10**length))).toString().slice(0, 9);
+        }
+    } else {
+        largeNumCheck = false
+        console.log('this works')
+    }
+    scientificNotation();
 }
 
 
@@ -27,9 +57,12 @@ function initialLoad () {
                 }
                 equalBtnClick = false;
                 clearBtnClick = false;
+                // let value = e.target.textContent;
+                // displayValue += value;
+                // display.textContent = `${displayValue}`;
                 let value = e.target.textContent;
                 displayValue += value;
-                display.textContent = `${displayValue}`;
+                scientificNotationCheck(`${displayValue}`);
                 operatorBtn.forEach((operator) => {
                     operator.classList.remove('clicked');
                 })
@@ -73,7 +106,6 @@ function operate (num1, operator, num2) {
 }
 
 function getTotal() {
-
     num1 = `${newTotal}`
     num2 = `${displayValue}`;
     let newNum1 = parseFloat(num1);
@@ -82,7 +114,7 @@ function getTotal() {
     let total = operate(newNum1, operandChoice, newNum2);
     displayValue += total;
     newTotal = total;
-    display.textContent = `${displayValue}`;
+    scientificNotationCheck(`${displayValue}`);
 }
 
 let operatorBtn = document.querySelectorAll('.operator');
@@ -121,8 +153,8 @@ function equalButton () {
         let total = operate(newNum1, operandChoice, newNum2);
         newTotal = total;
         displayValue = '';
-        displayValue += total
-        display.textContent = `${displayValue}`;
+        displayValue += total;
+        scientificNotationCheck(`${displayValue}`);
     }
     equalBtnClick = true;
     operatorBtn.forEach((operator) => {
