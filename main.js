@@ -12,12 +12,16 @@ let equalBtnClick = false;
 let clearBtnClick = true;
 let largeNum = ''
 let largeNumCheck = false;
+let decimal = 0;
+let decimalCheck = false;
 
 
 
 // need to make a function that would turn answer into scientific notation when it gets too long
 function scientificNotation () {
-    if (largeNumCheck === true) {
+    if (largeNumCheck === true && decimalCheck === true) {
+        display.textContent = `${largeNum}` + 'e' + '-' + `${decimal}`;
+    } else if (largeNumCheck === true) {
         display.textContent = `${largeNum}` + 'e' + `${(displayValue.length - 1)}`;
     } else if (largeNumCheck === false) {
         display.textContent = `${displayValue}`;
@@ -37,7 +41,20 @@ function scientificNotationCheck(num) {
         largeNumCheck = true;
         let integer = parseFloat(num);
         if (integer < 1) {
-            largeNum = integer.toString()
+            decimalCheck = true;
+            for (i = 2; i <= num.length; i++) {
+                if (num[i] === '0') {
+                    console.log('this is zero');
+                    continue;
+                } else {
+                    decimal = [i]-1;
+                    console.log([i]);
+                    largeNum = (multiply(integer, (10**decimal))).toString().slice(0, 8)
+                    console.log(integer);
+                    console.log(largeNum);
+                    break;
+                }
+            }
         } else if (integer >= 1) {
             largeNum = (divide(integer, (10**length))).toString().slice(0, 9);
         }
