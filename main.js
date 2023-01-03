@@ -10,8 +10,8 @@ let num2 = '';
 let newTotal = '';
 let equalBtnClick = false;
 let clearBtnClick = true;
-let largeNum = ''
-let largeNumCheck = false;
+let longNum = ''
+let longNumCheck = false;
 let decimal = 0;
 let decimalCheck = false;
 
@@ -19,11 +19,11 @@ let decimalCheck = false;
 
 // need to make a function that would turn answer into scientific notation when it gets too long
 function scientificNotation () {
-    if (largeNumCheck === true && decimalCheck === true) {
-        display.textContent = `${largeNum}` + 'e' + '-' + `${decimal}`;
-    } else if (largeNumCheck === true) {
-        display.textContent = `${largeNum}` + 'e' + `${(displayValue.length - 1)}`;
-    } else if (largeNumCheck === false) {
+    if (longNumCheck === true && decimalCheck === true) {
+        display.textContent = `${longNum}` + 'e' + '-' + `${decimal}`;
+    } else if (longNumCheck === true) {
+        display.textContent = `${longNum}` + 'e' + `${(displayValue.length - 1)}`;
+    } else if (longNumCheck === false) {
         display.textContent = `${displayValue}`;
     }
 }
@@ -38,29 +38,27 @@ function clearBtnCheck () {
 function scientificNotationCheck(num) {
     let length = num.length - 1;
     if (length >= 9) {
-        largeNumCheck = true;
+        longNumCheck = true;
         let integer = parseFloat(num);
         if (integer < 1) {
             decimalCheck = true;
             for (i = 2; i <= num.length; i++) {
                 if (num[i] === '0') {
-                    console.log('this is zero');
                     continue;
                 } else {
                     decimal = [i]-1;
                     console.log([i]);
-                    largeNum = (multiply(integer, (10**decimal))).toString().slice(0, 8)
-                    console.log(integer);
-                    console.log(largeNum);
+                    longNum = (multiply(integer, (10**decimal))).toString().slice(0, 8)
                     break;
                 }
             }
         } else if (integer >= 1) {
-            largeNum = (divide(integer, (10**length))).toString().slice(0, 9);
+            decimalCheck = false;
+            longNum = (divide(integer, (10**length))).toString().slice(0, 9);
         }
     } else {
-        largeNumCheck = false
-        console.log('this works')
+        longNumCheck = false;
+        decimalCheck = false;
     }
     scientificNotation();
 }
@@ -144,7 +142,6 @@ operatorBtn.forEach((operator) => {
         } else {
             num1 = `${displayValue}`;
             newTotal = `${displayValue}`
-            addBtnClick = true;
             operandChoice = `${e.target.id}`;
         }
         displayValue = '';
@@ -193,6 +190,24 @@ clearBtn.addEventListener('click', () => {
     addBtnClick = false;
     operatorClick = false;
 })
+
+// function deleteButton(string) {
+//     lastNum = string.length - 1;
+//     let newNum = string.replace(string[lastNum], '');
+//     displayValue = newNum;
+//     display.textContent = displayValue;
+// }
+
+let deleteBtn = document.querySelector('.delete')
+deleteBtn.addEventListener('click', () => {
+    lastNum = displayValue.length - 1;
+    let newNum = displayValue.replace(displayValue[lastNum], '');
+    displayValue = newNum;
+    display.textContent = displayValue;
+    if (displayValue === '') {
+        clearBtnCheck();
+    }
+});
 
 initialLoad();
 clearBtnCheck();
