@@ -19,10 +19,12 @@ let decimalCheck = false;
 
 // need to make a function that would turn answer into scientific notation when it gets too long
 function scientificNotation () {
-    if (longNumCheck === true && decimalCheck === true) {
+    if (longNumCheck === true && decimalCheck === true && (parseFloat(displayValue) > 0.0000001)) {
         display.textContent = `${longNum}` + 'e' + '-' + `${decimal}`;
-    } else if (longNumCheck === true) {
+    } else if (longNumCheck === true && (parseFloat(displayValue) > 0.000001)) {
         display.textContent = `${longNum}` + 'e' + `${(displayValue.length - 1)}`;
+    } else if (longNumCheck === true && (parseFloat(displayValue) <= 0.000001) && decimalCheck === true) {
+        display.textContent = 'ERROR, calculator reset';
     } else if (longNumCheck === false) {
         display.textContent = `${displayValue}`;
     }
@@ -40,7 +42,7 @@ function scientificNotationCheck(num) {
     if (length >= 9) {
         longNumCheck = true;
         let integer = parseFloat(num);
-        if (integer < 1) {
+        if (integer < 1 && integer > 0.000001) {
             decimalCheck = true;
             for (i = 2; i <= num.length; i++) {
                 if (num[i] === '0') {
@@ -55,6 +57,8 @@ function scientificNotationCheck(num) {
         } else if (integer >= 1) {
             decimalCheck = false;
             longNum = (divide(integer, (10**length))).toString().slice(0, 9);
+        } else if (integer <= 0.000001) {
+            decimalCheck = true;
         }
     } else {
         longNumCheck = false;
@@ -190,13 +194,6 @@ clearBtn.addEventListener('click', () => {
     addBtnClick = false;
     operatorClick = false;
 })
-
-// function deleteButton(string) {
-//     lastNum = string.length - 1;
-//     let newNum = string.replace(string[lastNum], '');
-//     displayValue = newNum;
-//     display.textContent = displayValue;
-// }
 
 let deleteBtn = document.querySelector('.delete')
 deleteBtn.addEventListener('click', () => {
