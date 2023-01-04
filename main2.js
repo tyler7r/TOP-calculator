@@ -92,6 +92,7 @@ function getTotal () {
     currentNum = '';
     displayValue = previousNum;
     display.textContent = displayValue;
+    manageDisplay(displayValue);
 }
 
 let operatorBtn = document.querySelectorAll('.operator');
@@ -162,6 +163,18 @@ deleteBtn.addEventListener('click', () => {
         display.textContent = displayValue;
     }
 })
+
+function manageDisplay(num) {
+    let string = num.toString();
+    let length = string.length - 1;
+    let integer = parseFloat(string);
+    if (length >= 9 && integer > 1) {
+        longNumCheck = true;
+        displayValue = (divide(integer, (10**length))).toString().slice(0,9);
+        display.textContent = displayValue + 'e' + length;
+        console.log(displayValue);
+    }
+}
 
 initialLoad();
 clearBtnCheck();
