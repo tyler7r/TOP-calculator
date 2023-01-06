@@ -11,10 +11,9 @@ let adjustedNum = '';
 
 let equalBtnClick = false;
 let clearBtnClick = true;
-let longNumCheck = false;
-let decimalCheck = false;
 let operatorClick = false;
 let deleteBtnClick = false;
+let scientificNotation = false;
 
 function clearBtnCheck() {
     if (clearBtnClick === true) {
@@ -32,6 +31,9 @@ function removeOperatorStyle() {
 function initialLoad() {
     numbers.forEach((button) => {
         button.addEventListener('click', (e) => {
+            if (scientificNotation === true) {
+                return;
+            }
             equalBtnClick = false;
             clearBtnClick = false;
             operatorClick = false;
@@ -91,14 +93,15 @@ function getTotal () {
     previousNum = total
     currentNum = '';
     displayValue = previousNum;
-    display.textContent = displayValue;
     manageDisplay(displayValue);
+    display.textContent = displayValue;
 }
 
 let operatorBtn = document.querySelectorAll('.operator');
 operatorBtn.forEach((operator) => {
     operator.addEventListener('click', (e) => {
         clearBtnClick = false;
+        scientificNotation = false;
         if (operatorClick === true) {
             return;
         }
@@ -125,6 +128,7 @@ equalBtn.addEventListener('click', equalButton);
 
 function equalButton () {
     clearBtnClick = false;
+    scientificNotation = false;
     if (equalBtnClick === false) {
         currentFactor = currentNum;
         getTotal();
@@ -147,10 +151,14 @@ clearBtn.addEventListener('click', () => {
     equalBtnClick = false;
     operatorClick = false;
     deleteBtnClick = false;
+    scientificNotation = false;
 })
 
 let deleteBtn = document.querySelector('.delete');
 deleteBtn.addEventListener('click', () => {
+    if (scientificNotation === true) {
+        return;
+    }
     deleteBtnClick = true;
     let string = displayValue.toString();
     let lastNum = string.length - 1;
@@ -165,16 +173,46 @@ deleteBtn.addEventListener('click', () => {
 })
 
 function manageDisplay(num) {
-    let string = num.toString();
+    let integer = parseFloat(num);
+    let string = integer.toString();
     let length = string.length - 1;
-    let integer = parseFloat(string);
-    if (length >= 9 && integer > 1) {
-        longNumCheck = true;
-        displayValue = (divide(integer, (10**length))).toString().slice(0,9);
-        display.textContent = displayValue + 'e' + length;
-        console.log(displayValue);
+    
+    if (length >= 9 && (integer > 1 || integer <= 0.00000009)) {
+        let eNotation = integer.toExponential(6);
+        displayValue = eNotation;
+        display.textContent = displayValue;
+        scientificNotation = true;
+    } else if (length >=9 && (integer > 0.00000009 && integer < 1) && string.includes('.')) {
+        displayValue = integer.toFixed(8);
+        display.textContent = displayValue;
     }
 }
+
+decimalBtn = document.querySelector('.decimal');
+decimalBtn.addEventListener('click', (e) => {
+    if (currentNum.toString().includes('.')) {
+        return
+    }
+    let value = e.target.textContent;
+    currentNum += value;
+    displayValue = currentNum;
+    display.textContent = displayValue;
+});
+
+negativeBtn = document.querySelector('.negative');
+negativeBtn.addEventListener('click', () => {
+    if (currentNum === '') {
+        let newNum = previousNum * -1;
+        previousNum = newNum;
+        displayValue = previousNum.toString();
+        display.textContent = displayValue;
+    } else {
+        let num = parseFloat(currentNum);
+        currentNum = num * -1;
+        displayValue = currentNum.toString();
+        display.textContent = displayValue;
+    }
+})
 
 initialLoad();
 clearBtnCheck();
