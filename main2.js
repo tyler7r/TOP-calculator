@@ -72,7 +72,7 @@ function operate (num1, operator, num2) {
         return add (num1, num2);
     } else if (operator == '-') {
         return subtract (num1, num2)
-    } else if (operator == 'X') {
+    } else if (operator == 'x') {
         return multiply (num1, num2);
     } else if (operator == '/') {
         return divide (num1, num2);
@@ -177,8 +177,13 @@ function manageDisplay(num) {
     let string = integer.toString();
     let length = string.length - 1;
     
-    if (length >= 9 && (integer > 1 || integer <= 0.00000009)) {
+    if (length >= 9 && (integer > 1 || integer <= 0.00000009) && integer < 1**100) {
         let eNotation = integer.toExponential(6);
+        displayValue = eNotation;
+        display.textContent = displayValue;
+        scientificNotation = true;
+    } else if (integer >= (1**100)) {
+        let eNotation = integer.toExponential(5);
         displayValue = eNotation;
         display.textContent = displayValue;
         scientificNotation = true;
@@ -216,3 +221,69 @@ negativeBtn.addEventListener('click', () => {
 
 initialLoad();
 clearBtnCheck();
+
+window.addEventListener('keydown', (e) => {
+    console.log(e.key);
+    let key = e.key;
+    if (key === 'Enter') {
+        equalButton();
+    } else if (key === '+' || key === '/' || key === '-' || key === 'x') {
+        clearBtnClick = false;
+        scientificNotation = false;
+        if (operatorClick === true) {
+            return;
+        }
+        if (previousNum === '') {
+            previousNum = currentNum;
+            currentNum = '';
+            operandChoice = key;
+        } else if (equalBtnClick === true) {
+            operandChoice = key;
+        } else {
+            getTotal();
+            operandChoice = key;
+        }
+        operatorClick = true;
+        equalBtnClick = false;
+        removeOperatorStyle();
+        // let operatorFill = document.getElementById(`${key}`);
+        // operatorFill.classList.add('clicked');
+    } else if (key === 'Backspace') {
+        if (scientificNotation === true) {
+            return;
+        }
+            deleteBtnClick = true;
+            let string = displayValue.toString();
+            let lastNum = string.length - 1;
+            let newNum = string.replace(string[lastNum], '');
+            adjustedNum = newNum;
+            displayValue = newNum;
+            display.textContent = adjustedNum;
+            if (displayValue === '') {
+                displayValue = '0';
+                display.textContent = displayValue;
+        }
+    } else if (key === '1' || key === '2' || key === '3' || key === '4' || key === '5' || key === '6' || key === '7' || key === '8' || key === '9' || key === '0') {
+        if (scientificNotation === true) {
+            return;
+        }
+        equalBtnClick = false;
+        clearBtnClick = false;
+        operatorClick = false;
+        let value = key;
+        currentNum += value;
+        displayValue = currentNum;
+        display.textContent = displayValue;
+        removeOperatorStyle();
+    } else if (key === '.') {
+        if (currentNum.toString().includes('.')) {
+            return
+        }
+        let value = e.target.textContent;
+        currentNum += value;
+        displayValue = currentNum;
+        display.textContent = displayValue;
+    } else {
+        return;
+    }
+})
