@@ -1,96 +1,53 @@
 const buttons = document.querySelectorAll('button');
 const display = document.querySelector('.display');
 const numbers = document.querySelectorAll('.number');
+
 let displayValue = '';
-let operatorClick = false;
-let addBtnClick = false;
+let currentNum = '';
+let previousNum = '';
 let operandChoice = '';
-let num1 = '';
-let num2 = '';
-let newTotal = '';
+let currentFactor = '';
+let adjustedNum = '';
+let buttonClicked = '';
+
 let equalBtnClick = false;
 let clearBtnClick = true;
-let longNum = ''
-let longNumCheck = false;
-let decimal = 0;
-let decimalCheck = false;
+let operatorClick = false;
+let deleteBtnClick = false;
+let scientificNotation = false;
 
-
-
-// need to make a function that would turn answer into scientific notation when it gets too long
-function scientificNotation () {
-    if (longNumCheck === true && decimalCheck === true && (parseFloat(displayValue) > 0.0000001)) {
-        display.textContent = `${longNum}` + 'e' + '-' + `${decimal}`;
-    } else if (longNumCheck === true && (parseFloat(displayValue) > 0.000001)) {
-        display.textContent = `${longNum}` + 'e' + `${(displayValue.length - 1)}`;
-    } else if (longNumCheck === true && (parseFloat(displayValue) <= 0.000001) && decimalCheck === true) {
-        display.textContent = 'ERROR, calculator reset';
-    } else if (longNumCheck === false) {
-        display.textContent = `${displayValue}`;
-    }
-}
-
-function clearBtnCheck () {
-    if (clearBtnClick = true) {
+function clearBtnCheck() {
+    if (clearBtnClick === true) {
         displayValue = '0';
-        display.textContent = `${displayValue}`;
+        display.textContent = displayValue;
     }
 }
 
-function scientificNotationCheck(num) {
-    let length = num.length - 1;
-    if (length >= 9) {
-        longNumCheck = true;
-        let integer = parseFloat(num);
-        if (integer < 1 && integer > 0.000001) {
-            decimalCheck = true;
-            for (i = 2; i <= num.length; i++) {
-                if (num[i] === '0') {
-                    continue;
-                } else {
-                    decimal = [i]-1;
-                    console.log([i]);
-                    longNum = (multiply(integer, (10**decimal))).toString().slice(0, 8)
-                    break;
-                }
+function removeOperatorStyle() {
+    operatorBtn.forEach((operator) => {
+        operator.classList.remove('clicked');
+    })
+}
+
+function initialLoad() {
+    numbers.forEach((button) => {
+        button.addEventListener('click', (e) => {
+            buttonClicked = 'number';
+            if (scientificNotation === true) {
+                return;
             }
-        } else if (integer >= 1) {
-            decimalCheck = false;
-            longNum = (divide(integer, (10**length))).toString().slice(0, 9);
-        } else if (integer <= 0.000001) {
-            decimalCheck = true;
-        }
-    } else {
-        longNumCheck = false;
-        decimalCheck = false;
-    }
-    scientificNotation();
-}
-
-
-function initialLoad () {
-        numbers.forEach((button) => {
-            button.addEventListener('click', (e) => {
-                if (clearBtnClick === true) {
-                    displayValue = '';
-                }
-                equalBtnClick = false;
-                clearBtnClick = false;
-                // let value = e.target.textContent;
-                // displayValue += value;
-                // display.textContent = `${displayValue}`;
-                let value = e.target.textContent;
-                displayValue += value;
-                scientificNotationCheck(`${displayValue}`);
-                operatorBtn.forEach((operator) => {
-                    operator.classList.remove('clicked');
-                })
-                console.log(e.target.id);
-            })
+            equalBtnClick = false;
+            clearBtnClick = false;
+            operatorClick = false;
+            let value = e.target.textContent;
+            currentNum += value;
+            displayValue = currentNum;
+            display.textContent = displayValue;
+            // scientificNotationCheck(`${displayValue}`);
+            removeOperatorStyle();
         })
+    })
 }
-
-
 
 function add (num1, num2) {
     let total = num1 + num2;
@@ -113,99 +70,229 @@ function divide (num1, num2) {
 }
 
 function operate (num1, operator, num2) {
-    if (operator == 'add') {
+    if (operator == '+') {
         return add (num1, num2);
-    } else if (operator == 'subtract') {
+    } else if (operator == '-') {
         return subtract (num1, num2)
-    } else if (operator == 'multiply') {
+    } else if (operator == 'x') {
         return multiply (num1, num2);
-    } else if (operator == 'divide') {
+    } else if (operator == '/') {
         return divide (num1, num2);
     }
 }
 
-function getTotal() {
-    num1 = `${newTotal}`
-    num2 = `${displayValue}`;
-    let newNum1 = parseFloat(num1);
-    let newNum2 = parseFloat(num2);
-    displayValue = '';
-    let total = operate(newNum1, operandChoice, newNum2);
-    displayValue += total;
-    newTotal = total;
-    scientificNotationCheck(`${displayValue}`);
+function getTotal () {
+    if (deleteBtnClick === true) {
+        previousNum = adjustedNum;
+        if (adjustedNum === '') {
+            previousNum = '0';
+        }
+        deleteBtnClick = false;
+    }
+    num1 = parseFloat(previousNum);
+    num2 = parseFloat(currentNum);
+    if (num2 === 0 && operandChoice === '/') {
+        display.textContent = 'Nice Try!'
+    } else {
+        let total = operate(num1, operandChoice, num2);
+        previousNum = total
+        currentNum = '';
+        displayValue = previousNum;
+        manageDisplay(displayValue);
+        display.textContent = displayValue;
+        console.log(displayValue.length - 1);
+    }
 }
 
 let operatorBtn = document.querySelectorAll('.operator');
 operatorBtn.forEach((operator) => {
     operator.addEventListener('click', (e) => {
         clearBtnClick = false;
-        if (operatorClick === true && equalBtnClick === false) {
-            operandChoice = `${e.target.id}`
-            getTotal();
-        } else {
-            num1 = `${displayValue}`;
-            newTotal = `${displayValue}`
-            operandChoice = `${e.target.id}`;
+        scientificNotation = false;
+        if (operatorClick === true) {
+            return;
         }
-        displayValue = '';
+        if (previousNum === '') {
+            previousNum = currentNum;
+            currentNum = '';
+            operandChoice = `${e.target.textContent}`;
+        } else if (equalBtnClick === true) {
+            operandChoice = `${e.target.textContent}`;
+        } else {
+            getTotal();
+            operandChoice = `${e.target.textContent}`;
+        }
         operatorClick = true;
-        operatorBtn.forEach((operator) => {
-            operator.classList.remove('clicked');
-        })
-        let choice = document.getElementById(`${e.target.id}`);
-        choice.classList.add('clicked');
+        equalBtnClick = false;
+        removeOperatorStyle();
+        let operatorFill = document.getElementById(`${e.target.id}`);
+        operatorFill.classList.add('clicked');
     })
 })
 
-let equalBtn = document.querySelector('.equal');
-equalBtn.addEventListener('click', (equalButton))
+let equalBtn = document.querySelector('#equal');
+equalBtn.addEventListener('click', equalButton);
 
-function equalButton () {
+function equalButton() {
     clearBtnClick = false;
+    // scientificNotation = false;
     if (equalBtnClick === false) {
+        currentFactor = currentNum;
         getTotal();
-    } if (equalBtnClick === true) {
-        let newNum1 = parseFloat(newTotal);
-        let newNum2 = parseFloat(num2);
-        let total = operate(newNum1, operandChoice, newNum2);
-        newTotal = total;
-        displayValue = '';
-        displayValue += total;
-        scientificNotationCheck(`${displayValue}`);
+    } else if (equalBtnClick === true) {
+        currentNum = currentFactor;
+        getTotal();
     }
     equalBtnClick = true;
-    operatorBtn.forEach((operator) => {
-        operator.classList.remove('clicked');
-    })
+    removeOperatorStyle();
 }
 
-let clearBtn = document.querySelector('.clear');
+let clearBtn = document.querySelector('#clear');
 clearBtn.addEventListener('click', () => {
-    operatorBtn.forEach((operator) => {
-        operator.classList.remove('clicked');
-    })
+    removeOperatorStyle();
     clearBtnClick = true;
     clearBtnCheck();
-    newTotal = '';
-    num1 = '';
-    num2 = '';
+    previousNum = '';
+    currentNum = '';
+    currentFactor = '';
     equalBtnClick = false;
-    addBtnClick = false;
     operatorClick = false;
+    deleteBtnClick = false;
+    scientificNotation = false;
 })
 
-let deleteBtn = document.querySelector('.delete')
+let deleteBtn = document.querySelector('#delete');
 deleteBtn.addEventListener('click', () => {
-    lastNum = displayValue.length - 1;
-    let newNum = displayValue.replace(displayValue[lastNum], '');
-    displayValue = newNum;
-    display.textContent = displayValue;
-    if (displayValue === '') {
-        clearBtnCheck();
+    if (scientificNotation === true) {
+        return;
     }
+    deleteBtnClick = true;
+    let string = displayValue.toString();
+    let lastNum = string.length - 1;
+    let newNum = string.replace(string[lastNum], '');
+    adjustedNum = newNum;
+    displayValue = newNum;
+    display.textContent = adjustedNum;
+    if (displayValue === '') {
+        displayValue = '0';
+        display.textContent = displayValue;
+    }
+})
+
+function manageDisplay(num) {
+    let integer = parseFloat(num);
+    let string = integer.toString();
+    let length = string.length - 1;
+    
+    if (length >= 9 && (integer > 1 || integer <= 0.00000009) && integer < 1**100) {
+        let eNotation = integer.toExponential(6);
+        displayValue = eNotation;
+        display.textContent = displayValue;
+        scientificNotation = true;
+    } else if (length >= 9 && (integer >= (1**100))) {
+        let eNotation = integer.toExponential(5);
+        displayValue = eNotation;
+        display.textContent = displayValue;
+        scientificNotation = true;
+    } else if (length >=9 && (integer > 0.00000009 && integer < 1) && string.includes('.')) {
+        displayValue = integer.toFixed(8);
+        display.textContent = displayValue;
+    }
+}
+
+decimalBtn = document.querySelector('#decimal');
+decimalBtn.addEventListener('click', (e) => {
+    if (currentNum.toString().includes('.')) {
+        return
+    }
+    let value = e.target.textContent;
+    currentNum += value;
+    displayValue = currentNum;
+    display.textContent = displayValue;
 });
+
+negativeBtn = document.querySelector('#negative');
+negativeBtn.addEventListener('click', () => {
+    if (currentNum === '') {
+        let newNum = previousNum * -1;
+        previousNum = newNum;
+        displayValue = previousNum.toString();
+        display.textContent = displayValue;
+    } else {
+        let num = parseFloat(currentNum);
+        currentNum = num * -1;
+        displayValue = currentNum.toString();
+        display.textContent = displayValue;
+    }
+})
+
+window.addEventListener('keydown', (e) => {
+    let key = e.key;
+    console.log(key);
+    if (key === 'Enter') {
+        equalButton();
+    } else if (key === '+' || key === '/' || key === '-' || key === 'x') {
+        clearBtnClick = false;
+        scientificNotation = false;
+        if (operatorClick === true) {
+            return;
+        }
+        if (previousNum === '') {
+            previousNum = currentNum;
+            currentNum = '';
+            operandChoice = key;
+        } else if (equalBtnClick === true) {
+            operandChoice = key;
+        } else {
+            getTotal();
+            operandChoice = key;
+        }
+        operatorClick = true;
+        equalBtnClick = false;
+        removeOperatorStyle();
+        // let operatorFill = document.getElementById(`${key}`);
+        // operatorFill.classList.add('clicked');
+    } else if (key === 'Backspace') {
+        if (scientificNotation === true) {
+            return;
+        }
+            deleteBtnClick = true;
+            let string = displayValue.toString();
+            let lastNum = string.length - 1;
+            let newNum = string.replace(string[lastNum], '');
+            adjustedNum = newNum;
+            displayValue = newNum;
+            display.textContent = adjustedNum;
+            if (displayValue === '') {
+                displayValue = '0';
+                display.textContent = displayValue;
+        }
+    } else if (key === '1' || key === '2' || key === '3' || key === '4' || key === '5' || key === '6' || key === '7' || key === '8' || key === '9' || key === '0') {
+        if (scientificNotation === true) {
+            return;
+        }
+        equalBtnClick = false;
+        clearBtnClick = false;
+        operatorClick = false;
+        let value = key;
+        console.log(typeof(key));
+        currentNum += value;
+        displayValue = currentNum;
+        display.textContent = displayValue;
+        removeOperatorStyle();
+    } else if (key === '.') {
+        if (currentNum.toString().includes('.')) {
+            return
+        }
+        let value = key
+        currentNum += value;
+        displayValue = currentNum;
+        display.textContent = displayValue;
+    } else {
+        return;
+    }
+    clearBtnClick = false;
+})
 
 initialLoad();
 clearBtnCheck();
-
