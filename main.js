@@ -43,7 +43,6 @@ function initialLoad() {
             currentNum += value;
             displayValue = currentNum;
             display.textContent = displayValue;
-            // scientificNotationCheck(`${displayValue}`);
             removeOperatorStyle();
         })
     })
@@ -135,7 +134,6 @@ equalBtn.addEventListener('click', equalButton);
 
 function equalButton() {
     clearBtnClick = false;
-    // scientificNotation = false;
     if (equalBtnClick === false) {
         currentFactor = currentNum;
         getTotal();
@@ -250,8 +248,6 @@ window.addEventListener('keydown', (e) => {
         operatorClick = true;
         equalBtnClick = false;
         removeOperatorStyle();
-        // let operatorFill = document.getElementById(`${key}`);
-        // operatorFill.classList.add('clicked');
     } else if (key === 'Backspace') {
         if (scientificNotation === true) {
             return;
