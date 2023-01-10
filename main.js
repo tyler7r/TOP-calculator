@@ -44,6 +44,7 @@ function initialLoad() {
             displayValue = currentNum;
             display.textContent = displayValue;
             removeOperatorStyle();
+            clearBtnClick = false;
         })
     })
 }
@@ -99,7 +100,6 @@ function getTotal () {
         displayValue = previousNum;
         manageDisplay(displayValue);
         display.textContent = displayValue;
-        console.log(displayValue.length - 1);
     }
 }
 
@@ -226,7 +226,6 @@ negativeBtn.addEventListener('click', () => {
 
 window.addEventListener('keydown', (e) => {
     let key = e.key;
-    console.log(key);
     if (key === 'Enter') {
         equalButton();
     } else if (key === '+' || key === '/' || key === '-' || key === 'x') {
@@ -271,7 +270,6 @@ window.addEventListener('keydown', (e) => {
         clearBtnClick = false;
         operatorClick = false;
         let value = key;
-        console.log(typeof(key));
         currentNum += value;
         displayValue = currentNum;
         display.textContent = displayValue;
@@ -287,7 +285,6 @@ window.addEventListener('keydown', (e) => {
     } else {
         return;
     }
-    clearBtnClick = false;
 })
 
 initialLoad();
